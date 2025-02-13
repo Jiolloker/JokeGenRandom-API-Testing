@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat&family=Delius+Swash+Caps&family=Libre+Baskerville&display=swap" rel="stylesheet">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <title>Random Joke Generator</title>
+
+</head>
+<body class="wrapper">
+    <h1 class="title animate__animated animate__fadeInUp" style="font-weight:200;padding:16px;font-size:3em;text-align:center">Random Joke Generator</h1>
+    <div class="container">
+
+
+
+        <!-- Default message -->
+        <% if (!jokes) { %>
+            <h2 class="category-selection-tittle animate__animated animate__fadeInUp">Select a category and the number of jokes, then click the button below!</h2>
+        <% } %>
+
+    <!-- Form to fetch jokes -->
+    <form action="/get-joke" method="POST">
+        <div class="category-buttons">
+            <!-- Hidden checkboxes for each category -->
+            <input type="checkbox" id="category-any" name="category" value="Any" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-any')">Any</button>
+
+            <input type="checkbox" id="category-programming" name="category" value="Programming" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-programming')">Programming</button>
+
+            <input type="checkbox" id="category-misc" name="category" value="Misc" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-misc')">Misc</button>
+
+            <input type="checkbox" id="category-dark" name="category" value="Dark" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-dark')">Dark</button>
+
+            <input type="checkbox" id="category-pun" name="category" value="Pun" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-pun')">Pun</button>
+
+            <input type="checkbox" id="category-spooky" name="category" value="Spooky" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-spooky')">Spooky</button>
+
+            <input type="checkbox" id="category-christmas" name="category" value="Christmas" class="hidden-checkbox">
+            <button type="button" class="category-button" onclick="toggleButton('category-christmas')">Christmas</button>
+        </div>
+
+        <label class="category-label center" for="amount">Number of jokes (1 or more):<input class="center" type="number" id="amount" name="amount" min="1" value="1"><br><br></label>
+
+
+        <div class="center">
+            <button type="button star-button" class="btn" type="submit">
+            <strong>Generate random Joke(s)</strong>
+            <div id="container-stars">
+              <div id="stars"></div>
+            </div>
+          
+            <div id="glow">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+          </button>
+        </div>
+
+    </form>
+
+
+    <!-- Display the joke(s) JSON if available -->
+    <% if (jokes) { %>
+    </div>
+    <div class="container display-joke">
+        <!-- Check if the response contains multiple jokes -->
+        <% if (jokes.jokes) { %>
+            <!-- Loop through each joke in the array -->
+            <% jokes.jokes.forEach((joke, index) => { %>
+                <h2 class="joke-display">Joke <%= index + 1 %>:</h2>
+        <!-- Display the joke content -->
+            <% if (joke.type === "twopart") { %>
+                <h3 class="size-check joke-display">Setup:</h3>
+                <p class="joke-display"><%= joke.setup %></p>
+
+                <h3 class="size-check joke-display">Delivery:</h3>
+                <p class="joke-display"><%= joke.delivery %></p>
+
+            <% } else if (joke.type === "single") { %>
+                <h3 class="size-check joke-display">Joke:</h3>
+                <p class="joke-display"><%= joke.joke %></p>
+            <% } %>
+        <% }); %>
+
+        <!-- if not multiple jokes -->
+        <% } else { %>
+            
+        <h3 class="joke-display joke-display">Joke(s):</h3>
+        <% if (jokes.type === "twopart") { %>
+            <h3 class="size-check joke-display">Setup:</h3>
+            <p class="joke-display"><%= jokes.setup %></p>
+
+            <h3 class="size-check joke-display">Delivery:</h3>
+            <p class="joke-display"><%= jokes.delivery %></p>
+        <% } else if (jokes.type === "single") { %>
+            <h3 class="size-check joke-display">Joke:</h3>
+            <p class="joke-display"><%= jokes.joke %></p>
+        <% } %>
+    <% } %>
+
+    <!-- Raw JSON output: -->
+            <h2 class="joke-display">JSON Response:</h2>
+        <pre><%= JSON.stringify(jokes, null, 2) %></pre>
+    </div>
+    <% } %>
+
+
+
+    <script>
+        // JavaScript to toggle button states
+        function toggleButton(checkboxId) {
+            const checkbox = document.getElementById(checkboxId);
+            const button = checkbox.nextElementSibling; // The button is the next sibling
+
+            // Toggle the checkbox state
+            checkbox.checked = !checkbox.checked;
+
+            // Toggle the button's "active-category" class
+            if (checkbox.checked) {
+                button.classList.add("active-category");
+            } else {
+                button.classList.remove("active-category");
+            }
+        }
+    </script>
+</body>
+<footer style="text-align:center;padding:0 32px 64px">
+    <p class="footer-text">Created by Argetina web developer<!-- --> <a href="https://www.linkedin.com/in/jonathan-kevin-lee-489868241/">Jonathan Lee</a></p>
+    <p class="footer-text">Based on a<!-- --> <a href="https://codepen.io/P1N2O/pen/pyBNzX">CodePen</a> by Manuel Pinto</p>
+</footer>
+
+
+</html>
